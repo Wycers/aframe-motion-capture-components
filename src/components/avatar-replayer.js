@@ -193,8 +193,7 @@ AFRAME.registerComponent('avatar-replayer', {
       document.createElement('a-entity');
     spectatorCameraEl.id = 'spectatorCamera';
     spectatorCameraEl.setAttribute('camera', {
-      active: data.spectatorMode,
-      userHeight: 0
+      active: data.spectatorMode
     });
     spectatorCameraEl.setAttribute('look-controls', '');
     spectatorCameraEl.setAttribute('wasd-controls', {
