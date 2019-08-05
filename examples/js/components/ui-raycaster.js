@@ -13,12 +13,24 @@
  */
 AFRAME.registerComponent('ui-raycaster', {
   schema: {
-    far: {default: Infinity}, // Infinity.
-    interval: {default: 100},
-    near: {default: 0},
-    objects: {default: ''},
-    recursive: {default: true},
-    rotation: {default: 0}
+    far: {
+      default: Infinity
+    }, // Infinity.
+    interval: {
+      default: 100
+    },
+    near: {
+      default: 0
+    },
+    objects: {
+      default: ''
+    },
+    recursive: {
+      default: true
+    },
+    rotation: {
+      default: 0
+    }
   },
 
   init: function () {
@@ -89,7 +101,9 @@ AFRAME.registerComponent('ui-raycaster', {
     var prevIntersectedEls;
 
     // Only check for intersection if interval time has passed.
-    if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+    if (prevCheckTime && (time - prevCheckTime < data.interval)) {
+      return;
+    }
 
     // Store old previously intersected entities.
     prevIntersectedEls = this.intersectedEls.slice();
@@ -99,20 +113,23 @@ AFRAME.registerComponent('ui-raycaster', {
     intersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
     // Only keep intersections against objects that have a reference to an entity.
-    intersections = intersections.filter(function hasEl (intersection) {
+    intersections = intersections.filter(function hasEl(intersection) {
       return !!intersection.object.el;
     });
 
     // Update intersectedEls.
-    intersectedEls = this.intersectedEls = intersections.map(function getEl (intersection) {
+    intersectedEls = this.intersectedEls = intersections.map(function getEl(intersection) {
       return intersection.object.el;
     });
 
     // Emit intersected on intersected entity per intersected entity.
-    intersections.forEach(function emitEvents (intersection) {
+    intersections.forEach(function emitEvents(intersection) {
       var intersectedEl = intersection.object.el;
       intersectedEl.addState('hovered');
-      intersectedEl.emit('raycaster-intersected', {el: el, intersection: intersection});
+      intersectedEl.emit('raycaster-intersected', {
+        el: el,
+        intersection: intersection
+      });
     });
 
     // Emit all intersections at once on raycasting entity.
@@ -124,11 +141,17 @@ AFRAME.registerComponent('ui-raycaster', {
     }
 
     // Emit intersection cleared on both entities per formerly intersected entity.
-    prevIntersectedEls.forEach(function checkStillIntersected (intersectedEl) {
-      if (intersectedEls.indexOf(intersectedEl) !== -1) { return; }
+    prevIntersectedEls.forEach(function checkStillIntersected(intersectedEl) {
+      if (intersectedEls.indexOf(intersectedEl) !== -1) {
+        return;
+      }
       intersectedEl.removeState('hovered');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      intersectedEl.emit('raycaster-intersected-cleared', {el: el});
+      el.emit('raycaster-intersection-cleared', {
+        el: intersectedEl
+      });
+      intersectedEl.emit('raycaster-intersected-cleared', {
+        el: el
+      });
     });
   },
 
@@ -141,7 +164,7 @@ AFRAME.registerComponent('ui-raycaster', {
     var scaleDummy = new THREE.Vector3();
 
     // Closure to make quaternion/vector3 objects private.
-    return function updateOriginDirection () {
+    return function updateOriginDirection() {
       var el = this.el;
       var direction = this.direction;
       var object3D = el.object3D;

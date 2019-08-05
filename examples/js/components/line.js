@@ -1,12 +1,20 @@
 /* globals AFRAME THREE */
 AFRAME.registerComponent('line', {
   schema: {
-    start: {type: 'vec3', default: '0 0 0'},
-    end: {type: 'vec3', default: '0 0 0'}
+    start: {
+      type: 'vec3',
+      default: '0 0 0'
+    },
+    end: {
+      type: 'vec3',
+      default: '0 0 0'
+    }
   },
 
   init: function () {
-    var material = this.material = new THREE.LineBasicMaterial({color: 0xfffdb3});
+    var material = this.material = new THREE.LineBasicMaterial({
+      color: 0xfffdb3
+    });
     var geometry = this.geometry = new THREE.Geometry();
     this.line = new THREE.Line(geometry, material);
     this.el.setObject3D('line', this.line);

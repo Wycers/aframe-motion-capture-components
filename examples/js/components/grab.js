@@ -1,10 +1,10 @@
 /* global AFRAME */
 
 /**
-* Handles events coming from the hand-controls.
-* Determines if the entity is grabbed or released.
-* Updates its position to move along the controller.
-*/
+ * Handles events coming from the hand-controls.
+ * Determines if the entity is grabbed or released.
+ * Updates its position to move along the controller.
+ */
 AFRAME.registerComponent('grab', {
   init: function () {
     this.GRABBED_STATE = 'grabbed';
@@ -44,7 +44,9 @@ AFRAME.registerComponent('grab', {
   onGripOpen: function (evt) {
     var hitEl = this.hitEl;
     this.grabbing = false;
-    if (!hitEl) { return; }
+    if (!hitEl) {
+      return;
+    }
     hitEl.removeState(this.GRABBED_STATE);
     this.hitEl = undefined;
   },
@@ -54,7 +56,9 @@ AFRAME.registerComponent('grab', {
     // If the element is already grabbed (it could be grabbed by another controller).
     // If the hand is not grabbing the element does not stick.
     // If we're already grabbing something you can't grab again.
-    if (!hitEl || hitEl.is(this.GRABBED_STATE) || !this.grabbing || this.hitEl) { return; }
+    if (!hitEl || hitEl.is(this.GRABBED_STATE) || !this.grabbing || this.hitEl) {
+      return;
+    }
     hitEl.addState(this.GRABBED_STATE);
     this.hitEl = hitEl;
   },
@@ -62,7 +66,9 @@ AFRAME.registerComponent('grab', {
   tick: function () {
     var hitEl = this.hitEl;
     var position;
-    if (!hitEl) { return; }
+    if (!hitEl) {
+      return;
+    }
     this.updateDelta();
     position = hitEl.getAttribute('position');
     hitEl.setAttribute('position', {

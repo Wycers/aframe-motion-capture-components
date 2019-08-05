@@ -10,7 +10,9 @@ suite('avatar-recorder', function () {
   setup(function (done) {
     sceneEl = document.createElement('a-scene');
     sceneEl.addEventListener('componentinitialized', evt => {
-      if (evt.detail.name !== 'avatar-recorder') { return; }
+      if (evt.detail.name !== 'avatar-recorder') {
+        return;
+      }
       if (sceneEl.systems.recordingdb.hasLoaded) {
         component = sceneEl.components['avatar-recorder'];
         waitForCamera();
@@ -22,7 +24,7 @@ suite('avatar-recorder', function () {
       }
     });
 
-    function waitForCamera () {
+    function waitForCamera() {
       if (sceneEl.camera) {
         done();
         return;
@@ -84,7 +86,14 @@ suite('avatar-recorder', function () {
   test('adds recording to IndexedDB', function (done) {
     sceneEl.setAttribute('avatar-recorder', 'recordingName', 'foo');
     component.startRecording();
-    component.recordingData = {camera: {poses: [{timestamp: 0}], events: []}};
+    component.recordingData = {
+      camera: {
+        poses: [{
+          timestamp: 0
+        }],
+        events: []
+      }
+    };
     component.isRecording = true;
     component.stopRecording();
     sceneEl.systems.recordingdb.getRecording('foo').then(data => {
@@ -101,7 +110,9 @@ suite('avatar-replayer', function () {
   setup(function (done) {
     sceneEl = document.createElement('a-scene');
     sceneEl.addEventListener('componentinitialized', evt => {
-      if (evt.detail.name !== 'avatar-replayer') { return; }
+      if (evt.detail.name !== 'avatar-replayer') {
+        return;
+      }
       component = sceneEl.components['avatar-replayer'];
       done();
     });
@@ -121,9 +132,24 @@ suite('avatar-replayer', function () {
 
     sceneEl.addEventListener('camera-set-active', () => {
       sceneEl.components['avatar-replayer'].startReplaying({
-        camera: {poses: [{timestamp: 0}], events: []},
-        c1: {poses: [{timestamp: 0}], events: []},
-        c2: {poses: [{timestamp: 0}], events: []}
+        camera: {
+          poses: [{
+            timestamp: 0
+          }],
+          events: []
+        },
+        c1: {
+          poses: [{
+            timestamp: 0
+          }],
+          events: []
+        },
+        c2: {
+          poses: [{
+            timestamp: 0
+          }],
+          events: []
+        }
       });
       assert.ok(sceneEl.camera.el.getAttribute('motion-capture-replayer'));
       assert.ok(c1.getAttribute('motion-capture-replayer'));
@@ -138,13 +164,23 @@ suite('avatar-replayer', function () {
     c1.setAttribute('tracked-controls', '');
     c1.setAttribute('motion-capture-replayer', '');
     const c1StartPlayingSpy = this.sinon.spy(c1.components['motion-capture-replayer'],
-                                             'startReplaying');
+      'startReplaying');
     sceneEl.appendChild(c1);
 
     sceneEl.addEventListener('camera-set-active', () => {
       component.startReplaying({
-        camera: {poses: [{timestamp: 0}], events: []},
-        c1: {poses: [{timestamp: 0}], events: []},
+        camera: {
+          poses: [{
+            timestamp: 0
+          }],
+          events: []
+        },
+        c1: {
+          poses: [{
+            timestamp: 0
+          }],
+          events: []
+        },
       });
       assert.ok(c1StartPlayingSpy.called);
       done();
@@ -159,7 +195,9 @@ suite('motion-capture-recorder', function () {
   setup(function (done) {
     el = helpers.entityFactory();
     el.addEventListener('componentinitialized', evt => {
-      if (evt.detail.name !== 'motion-capture-recorder') { return; }
+      if (evt.detail.name !== 'motion-capture-recorder') {
+        return;
+      }
       component = el.components['motion-capture-recorder'];
       done();
     });
@@ -180,11 +218,27 @@ suite('motion-capture-recorder', function () {
       component.tick(200);
 
       assert.equal(component.recordedPoses.length, 2);
-      assert.shallowDeepEqual(component.recordedPoses[0].position, {x: 1, y: 1, z: 1});
-      assert.shallowDeepEqual(component.recordedPoses[0].rotation, {x: 90, y: 90, z: 90});
+      assert.shallowDeepEqual(component.recordedPoses[0].position, {
+        x: 1,
+        y: 1,
+        z: 1
+      });
+      assert.shallowDeepEqual(component.recordedPoses[0].rotation, {
+        x: 90,
+        y: 90,
+        z: 90
+      });
       assert.equal(component.recordedPoses[0].timestamp, 100);
-      assert.shallowDeepEqual(component.recordedPoses[1].position, {x: 2, y: 2, z: 2});
-      assert.shallowDeepEqual(component.recordedPoses[1].rotation, {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(component.recordedPoses[1].position, {
+        x: 2,
+        y: 2,
+        z: 2
+      });
+      assert.shallowDeepEqual(component.recordedPoses[1].rotation, {
+        x: 0,
+        y: 0,
+        z: 0
+      });
       assert.equal(component.recordedPoses[1].timestamp, 200);
     });
 
@@ -201,12 +255,24 @@ suite('motion-capture-recorder', function () {
       assert.equal(component.recordedEvents.length, 0);
       component.tick(100);
       component.isRecording = true;
-      el.emit('axismove', {id: 'foo', axis: {x: 1, y: 1}, changed: [true, true]});
+      el.emit('axismove', {
+        id: 'foo',
+        axis: {
+          x: 1,
+          y: 1
+        },
+        changed: [true, true]
+      });
       setTimeout(() => {
         assert.equal(component.recordedEvents.length, 1);
         assert.equal(component.recordedEvents[0].name, 'axismove');
         assert.shallowDeepEqual(component.recordedEvents[0].detail, {
-          id: 'foo', axis: {x: 1, y: 1}, changed: [true, true]
+          id: 'foo',
+          axis: {
+            x: 1,
+            y: 1
+          },
+          changed: [true, true]
         });
         assert.equal(component.recordedEvents[0].timestamp, 100);
         done();
@@ -217,12 +283,21 @@ suite('motion-capture-recorder', function () {
       assert.equal(component.recordedEvents.length, 0);
       component.tick(100);
       component.isRecording = true;
-      el.emit('buttonchanged', {id: 'foo', state: {pressed: true}});
+      el.emit('buttonchanged', {
+        id: 'foo',
+        state: {
+          pressed: true
+        }
+      });
       setTimeout(() => {
         assert.equal(component.recordedEvents.length, 1);
         assert.equal(component.recordedEvents[0].name, 'buttonchanged');
-        assert.shallowDeepEqual(component.recordedEvents[0].detail,
-                                {id: 'foo', state: {pressed: true}});
+        assert.shallowDeepEqual(component.recordedEvents[0].detail, {
+          id: 'foo',
+          state: {
+            pressed: true
+          }
+        });
         assert.equal(component.recordedEvents[0].timestamp, 100);
         done();
       });
@@ -232,12 +307,21 @@ suite('motion-capture-recorder', function () {
       assert.equal(component.recordedEvents.length, 0);
       component.tick(100);
       component.isRecording = true;
-      el.emit('buttonup', {id: 'foo', state: {pressed: true}});
+      el.emit('buttonup', {
+        id: 'foo',
+        state: {
+          pressed: true
+        }
+      });
       setTimeout(() => {
         assert.equal(component.recordedEvents.length, 1);
         assert.equal(component.recordedEvents[0].name, 'buttonup');
-        assert.shallowDeepEqual(component.recordedEvents[0].detail,
-                                {id: 'foo', state: {pressed: true}});
+        assert.shallowDeepEqual(component.recordedEvents[0].detail, {
+          id: 'foo',
+          state: {
+            pressed: true
+          }
+        });
         assert.equal(component.recordedEvents[0].timestamp, 100);
         done();
       });
@@ -247,12 +331,21 @@ suite('motion-capture-recorder', function () {
       assert.equal(component.recordedEvents.length, 0);
       component.tick(100);
       component.isRecording = true;
-      el.emit('buttondown', {id: 'foo', state: {pressed: true}});
+      el.emit('buttondown', {
+        id: 'foo',
+        state: {
+          pressed: true
+        }
+      });
       setTimeout(() => {
         assert.equal(component.recordedEvents.length, 1);
         assert.equal(component.recordedEvents[0].name, 'buttondown');
-        assert.shallowDeepEqual(component.recordedEvents[0].detail,
-                                {id: 'foo', state: {pressed: true}});
+        assert.shallowDeepEqual(component.recordedEvents[0].detail, {
+          id: 'foo',
+          state: {
+            pressed: true
+          }
+        });
         assert.equal(component.recordedEvents[0].timestamp, 100);
         done();
       });
@@ -262,12 +355,21 @@ suite('motion-capture-recorder', function () {
       assert.equal(component.recordedEvents.length, 0);
       component.tick(100);
       component.isRecording = true;
-      el.emit('touchstart', {id: 'foo', state: {pressed: true}});
+      el.emit('touchstart', {
+        id: 'foo',
+        state: {
+          pressed: true
+        }
+      });
       setTimeout(() => {
         assert.equal(component.recordedEvents.length, 1);
         assert.equal(component.recordedEvents[0].name, 'touchstart');
-        assert.shallowDeepEqual(component.recordedEvents[0].detail,
-                                {id: 'foo', state: {pressed: true}});
+        assert.shallowDeepEqual(component.recordedEvents[0].detail, {
+          id: 'foo',
+          state: {
+            pressed: true
+          }
+        });
         assert.equal(component.recordedEvents[0].timestamp, 100);
         done();
       });
@@ -277,12 +379,21 @@ suite('motion-capture-recorder', function () {
       assert.equal(component.recordedEvents.length, 0);
       component.tick(100);
       component.isRecording = true;
-      el.emit('touchend', {id: 'foo', state: {pressed: true}});
+      el.emit('touchend', {
+        id: 'foo',
+        state: {
+          pressed: true
+        }
+      });
       setTimeout(() => {
         assert.equal(component.recordedEvents.length, 1);
         assert.equal(component.recordedEvents[0].name, 'touchend');
-        assert.shallowDeepEqual(component.recordedEvents[0].detail,
-                                {id: 'foo', state: {pressed: true}});
+        assert.shallowDeepEqual(component.recordedEvents[0].detail, {
+          id: 'foo',
+          state: {
+            pressed: true
+          }
+        });
         assert.equal(component.recordedEvents[0].timestamp, 100);
         done();
       });
@@ -313,7 +424,9 @@ suite('motion-capture-replayer', function () {
   setup(function (done) {
     el = helpers.entityFactory();
     el.addEventListener('componentinitialized', evt => {
-      if (evt.detail.name !== 'motion-capture-replayer') { return; }
+      if (evt.detail.name !== 'motion-capture-replayer') {
+        return;
+      }
       component = el.components['motion-capture-replayer'];
       done();
     });
@@ -323,34 +436,77 @@ suite('motion-capture-replayer', function () {
   test('plays poses', function () {
     var rotTemp
 
-    assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
-    assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 0, y: 0, z: 0});
+    assert.shallowDeepEqual(el.getAttribute('position'), {
+      x: 0,
+      y: 0,
+      z: 0
+    });
+    assert.shallowDeepEqual(el.getAttribute('rotation'), {
+      x: 0,
+      y: 0,
+      z: 0
+    });
 
-    component.startReplayingPoses([
-      {timestamp: 100, position: '1 1 1', rotation: '90 90 90'},
-      {timestamp: 200, position: '2 2 2', rotation: '60 60 60'},
-      {timestamp: 250, position: '3 3 3', rotation: '30 30 30'}
+    component.startReplayingPoses([{
+        timestamp: 100,
+        position: '1 1 1',
+        rotation: '90 90 90'
+      },
+      {
+        timestamp: 200,
+        position: '2 2 2',
+        rotation: '60 60 60'
+      },
+      {
+        timestamp: 250,
+        position: '3 3 3',
+        rotation: '30 30 30'
+      }
     ]);
 
     component.tick(150, 50);
-    assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 1, z: 1});
-    assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 90, y: 90, z: 90});
+    assert.shallowDeepEqual(el.getAttribute('position'), {
+      x: 1,
+      y: 1,
+      z: 1
+    });
+    assert.shallowDeepEqual(el.getAttribute('rotation'), {
+      x: 90,
+      y: 90,
+      z: 90
+    });
 
     component.tick(200, 50);
-    assert.shallowDeepEqual(el.getAttribute('position'), {x: 2, y: 2, z: 2});
+    assert.shallowDeepEqual(el.getAttribute('position'), {
+      x: 2,
+      y: 2,
+      z: 2
+    });
     rotTemp = el.getAttribute('rotation');
     rotTemp.x = Math.round(rotTemp.x);
     rotTemp.y = Math.round(rotTemp.y);
     rotTemp.z = Math.round(rotTemp.z);
-    assert.shallowDeepEqual(rotTemp, {x: 60, y: 60, z: 60});
+    assert.shallowDeepEqual(rotTemp, {
+      x: 60,
+      y: 60,
+      z: 60
+    });
 
     component.tick(300, 100);
-    assert.shallowDeepEqual(el.getAttribute('position'), {x: 3, y: 3, z: 3});
+    assert.shallowDeepEqual(el.getAttribute('position'), {
+      x: 3,
+      y: 3,
+      z: 3
+    });
     rotTemp = el.getAttribute('rotation');
     rotTemp.x = Math.round(rotTemp.x);
     rotTemp.y = Math.round(rotTemp.y);
     rotTemp.z = Math.round(rotTemp.z);
-    assert.shallowDeepEqual(rotTemp, {x: 30, y: 30, z: 30});
+    assert.shallowDeepEqual(rotTemp, {
+      x: 30,
+      y: 30,
+      z: 30
+    });
   });
 
   test('plays events', function (done) {
@@ -377,10 +533,37 @@ suite('motion-capture-replayer', function () {
       done();
     });
 
-    component.startReplayingEvents([
-      {timestamp: 100, name: 'buttondown', detail: {id: 'foo', state: {pressed: true}}},
-      {timestamp: 200, name: 'axismove', detail: {id: 'bar', axis: {x: 1, y: 1}}},
-      {timestamp: 250, name: 'touchend', detail: {id: 'baz', state: {pressed: true}}}
+    component.startReplayingEvents([{
+        timestamp: 100,
+        name: 'buttondown',
+        detail: {
+          id: 'foo',
+          state: {
+            pressed: true
+          }
+        }
+      },
+      {
+        timestamp: 200,
+        name: 'axismove',
+        detail: {
+          id: 'bar',
+          axis: {
+            x: 1,
+            y: 1
+          }
+        }
+      },
+      {
+        timestamp: 250,
+        name: 'touchend',
+        detail: {
+          id: 'baz',
+          state: {
+            pressed: true
+          }
+        }
+      }
     ]);
     component.tick(150, 50);
   });
@@ -392,9 +575,13 @@ suite('motion-capture-replayer system', function () {
   setup(function (done) {
     el = helpers.entityFactory();
     el.addEventListener('componentinitialized', evt => {
-      if (evt.detail.name !== 'motion-capture-replayer') { return; }
+      if (evt.detail.name !== 'motion-capture-replayer') {
+        return;
+      }
       component = el.components['motion-capture-replayer'];
-      setTimeout(() => { done(); }, 50);
+      setTimeout(() => {
+        done();
+      }, 50);
     });
     el.setAttribute('motion-capture-replayer', 'loop: false');
   });
@@ -406,13 +593,21 @@ suite('motion-capture-replayer system', function () {
       assert.equal(el.sceneEl.systems['motion-capture-replayer'].gamepads.length, 1);
       assert.equal(el.sceneEl.systems['tracked-controls'].controllers.length, 1);
       assert.equal(el.sceneEl.systems['tracked-controls'].controllers[0].id,
-                   'OpenVR Controller');
+        'OpenVR Controller');
       done();
     });
 
     el.components['motion-capture-replayer'].startReplaying({
-      gamepad: {id: 'OpenVR Controller', index: 1, hand: 'left'},
-      poses: [{timestamp: 100, position: '1 1 1', rotation: '90 90 90'}],
+      gamepad: {
+        id: 'OpenVR Controller',
+        index: 1,
+        hand: 'left'
+      },
+      poses: [{
+        timestamp: 100,
+        position: '1 1 1',
+        rotation: '90 90 90'
+      }],
       events: []
     });
   });

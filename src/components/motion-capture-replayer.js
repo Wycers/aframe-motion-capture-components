@@ -1,11 +1,21 @@
 /* global THREE, AFRAME  */
 AFRAME.registerComponent('motion-capture-replayer', {
   schema: {
-    enabled: {default: true},
-    recorderEl: {type: 'selector'},
-    loop: {default: false},
-    src: {default: ''},
-    spectatorCamera: {default: false}
+    enabled: {
+      default: true
+    },
+    recorderEl: {
+      type: 'selector'
+    },
+    loop: {
+      default: false
+    },
+    src: {
+      default: ''
+    },
+    spectatorCamera: {
+      default: false
+    }
   },
 
   init: function () {
@@ -38,7 +48,9 @@ AFRAME.registerComponent('motion-capture-replayer', {
     if (this.gamepadData) {
       gamepads = el.sceneEl.systems['motion-capture-replayer'].gamepads;
       gamepads.forEach(function (gamepad, i) {
-        if (gamepad === gamepadData) { found = i; }
+        if (gamepad === gamepadData) {
+          found = i;
+        }
       });
       if (found !== -1) {
         gamepads.splice(found, 1);
@@ -49,9 +61,15 @@ AFRAME.registerComponent('motion-capture-replayer', {
   update: function (oldData) {
     var data = this.data;
     this.updateRecorder(data.recorderEl, oldData.recorderEl);
-    if (!this.el.isPlaying) { this.playComponent(); }
-    if (oldData.src === data.src) { return; }
-    if (data.src) { this.updateSrc(data.src); }
+    if (!this.el.isPlaying) {
+      this.playComponent();
+    }
+    if (oldData.src === data.src) {
+      return;
+    }
+    if (data.src) {
+      this.updateSrc(data.src);
+    }
   },
 
   updateRecorder: function (newRecorderEl, oldRecorderEl) {
@@ -59,7 +77,9 @@ AFRAME.registerComponent('motion-capture-replayer', {
       oldRecorderEl.removeEventListener('strokestarted', this.onStrokeStarted);
       oldRecorderEl.removeEventListener('strokeended', this.onStrokeEnded);
     }
-    if (!newRecorderEl || oldRecorderEl === newRecorderEl) { return; }
+    if (!newRecorderEl || oldRecorderEl === newRecorderEl) {
+      return;
+    }
     newRecorderEl.addEventListener('strokestarted', this.onStrokeStarted);
     newRecorderEl.addEventListener('strokeended', this.onStrokeEnded);
   },
@@ -69,16 +89,18 @@ AFRAME.registerComponent('motion-capture-replayer', {
       src, false, this.startReplaying.bind(this));
   },
 
-  onStrokeStarted: function(evt) {
+  onStrokeStarted: function (evt) {
     this.reset();
   },
 
-  onStrokeEnded: function(evt) {
+  onStrokeEnded: function (evt) {
     this.startReplayingPoses(evt.detail.poses);
   },
 
   play: function () {
-    if (this.playingStroke) { this.playStroke(this.playingStroke); }
+    if (this.playingStroke) {
+      this.playStroke(this.playingStroke);
+    }
   },
 
   playComponent: function () {
@@ -124,7 +146,9 @@ AFRAME.registerComponent('motion-capture-replayer', {
 
   restoreInitialPose: function () {
     var el = this.el;
-    if (!this.initialPose) { return; }
+    if (!this.initialPose) {
+      return;
+    }
     el.setAttribute('position', this.initialPose.position);
     el.setAttribute('rotation', this.initialPose.rotation);
   },
@@ -132,7 +156,9 @@ AFRAME.registerComponent('motion-capture-replayer', {
   startReplayingPoses: function (poses) {
     this.isReplaying = true;
     this.currentPoseIndex = 0;
-    if (poses.length === 0) { return; }
+    if (poses.length === 0) {
+      return;
+    }
     this.playingPoses = poses;
     this.currentPoseTime = poses[0].timestamp;
   },
@@ -144,7 +170,9 @@ AFRAME.registerComponent('motion-capture-replayer', {
     var firstEvent;
     this.isReplaying = true;
     this.currentEventIndex = 0;
-    if (events.length === 0) { return; }
+    if (events.length === 0) {
+      return;
+    }
     firstEvent = events[0];
     this.playingEvents = events;
     this.currentEventTime = firstEvent.timestamp;
@@ -173,7 +201,7 @@ AFRAME.registerComponent('motion-capture-replayer', {
     // Determine next pose.
     // Comparing currentPoseTime to currentEvent.timestamp is not a typo.
     while ((currentPose && this.currentPoseTime >= currentPose.timestamp) ||
-           (currentEvent && this.currentPoseTime >= currentEvent.timestamp)) {
+      (currentEvent && this.currentPoseTime >= currentEvent.timestamp)) {
       // Pose.
       if (currentPose && this.currentPoseTime >= currentPose.timestamp) {
         if (this.currentPoseIndex === playingPoses.length - 1) {
@@ -208,12 +236,14 @@ AFRAME.registerComponent('motion-capture-replayer', {
       return;
     }
 
-    if (!this.isReplaying) { return; }
+    if (!this.isReplaying) {
+      return;
+    }
     this.playRecording(delta);
   }
 });
 
-function applyPose (el, pose) {
+function applyPose(el, pose) {
   el.setAttribute('position', pose.position);
   el.setAttribute('rotation', pose.rotation);
   el.object3D.updateMatrix()

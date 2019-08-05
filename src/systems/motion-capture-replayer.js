@@ -5,7 +5,7 @@ AFRAME.registerSystem('motion-capture-replayer', {
     var trackedControlsSystem;
     var trackedControlsTick;
 
-    trackedControlsSystem = sceneEl.systems['tracked-controls'];
+    trackedControlsSystem = sceneEl.systems['tracked-controls-webxr'];
     trackedControlsTick = AFRAME.components['tracked-controls'].Component.prototype.tick;
 
     // Gamepad data stored in recording and added here by `motion-capture-replayer` component.
@@ -43,7 +43,7 @@ AFRAME.registerSystem('motion-capture-replayer', {
   updateControllerList: function (gamepads) {
     var i;
     var sceneEl = this.sceneEl;
-    var trackedControlsSystem = sceneEl.systems['tracked-controls'];
+    var trackedControlsSystem = sceneEl.systems['tracked-controls-webxr'];
     gamepads = gamepads || []
     // convert from read-only GamepadList
     gamepads = Array.from(gamepads)

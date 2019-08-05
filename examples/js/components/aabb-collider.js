@@ -11,8 +11,12 @@
  */
 AFRAME.registerComponent('aabb-collider', {
   schema: {
-    objects: {default: ''},
-    state: {default: 'collided'}
+    objects: {
+      default: ''
+    },
+    state: {
+      default: 'collided'
+    }
   },
 
   init: function () {
@@ -48,7 +52,9 @@ AFRAME.registerComponent('aabb-collider', {
       var mesh = el.getObject3D('mesh');
       var self = this;
       // No mesh, no collisions
-      if (!mesh) { return; }
+      if (!mesh) {
+        return;
+      }
       // Update the bounding box to account for rotations and
       // position changes.
       updateBoundingBox();
@@ -57,23 +63,29 @@ AFRAME.registerComponent('aabb-collider', {
       // Emit events.
       collisions.forEach(handleHit);
       // No collisions.
-      if (collisions.length === 0) { self.el.emit('hit', {el: null}); }
+      if (collisions.length === 0) {
+        self.el.emit('hit', {
+          el: null
+        });
+      }
       // Updated the state of the elements that are not intersected anymore.
       this.collisions.filter(function (el) {
         return collisions.indexOf(el) === -1;
-      }).forEach(function removeState (el) {
+      }).forEach(function removeState(el) {
         el.removeState(self.data.state);
       });
       // Store new collisions
       this.collisions = collisions;
 
       // AABB collision detection
-      function intersect (el) {
+      function intersect(el) {
         var intersected;
         var mesh = el.getObject3D('mesh');
         var elMin;
         var elMax;
-        if (!mesh) { return; }
+        if (!mesh) {
+          return;
+        }
         boundingBox.setFromObject(mesh);
         elMin = boundingBox.min;
         elMax = boundingBox.max;
@@ -82,19 +94,23 @@ AFRAME.registerComponent('aabb-collider', {
         // It's an extension to 3 dimensions of this approach (with the condition negated)
         // https://www.youtube.com/watch?v=ghqD3e37R7E
         intersected = (self.elMin.x <= elMax.x && self.elMax.x >= elMin.x) &&
-                      (self.elMin.y <= elMax.y && self.elMax.y >= elMin.y) &&
-                      (self.elMin.z <= elMax.z && self.elMax.z >= elMin.z);
-        if (!intersected) { return; }
+          (self.elMin.y <= elMax.y && self.elMax.y >= elMin.y) &&
+          (self.elMin.z <= elMax.z && self.elMax.z >= elMin.z);
+        if (!intersected) {
+          return;
+        }
         collisions.push(el);
       }
 
-      function handleHit (hitEl) {
+      function handleHit(hitEl) {
         hitEl.emit('hit');
         hitEl.addState(self.data.state);
-        self.el.emit('hit', {el: hitEl});
+        self.el.emit('hit', {
+          el: hitEl
+        });
       }
 
-      function updateBoundingBox () {
+      function updateBoundingBox() {
         boundingBox.setFromObject(mesh);
         self.elMin.copy(boundingBox.min);
         self.elMax.copy(boundingBox.max);

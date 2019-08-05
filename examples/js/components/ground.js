@@ -8,7 +8,9 @@ AFRAME.registerComponent('ground', {
     var objectLoader;
     var object3D = this.el.object3D;
     var MODEL_URL = 'https://cdn.aframe.io/link-traversal/models/ground.json';
-    if (this.objectLoader) { return; }
+    if (this.objectLoader) {
+      return;
+    }
     objectLoader = this.objectLoader = new THREE.ObjectLoader();
     objectLoader.crossOrigin = '';
     objectLoader.load(MODEL_URL, function (obj) {

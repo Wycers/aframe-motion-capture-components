@@ -1,12 +1,30 @@
 /* global AFRAME, THREE */
 
 var EVENTS = {
-  axismove: {id: 0, props: ['id', 'axis', 'changed']},
-  buttonchanged: {id: 1, props: ['id', 'state']},
-  buttondown: {id: 2, props: ['id', 'state']},
-  buttonup: {id: 3, props: ['id', 'state']},
-  touchstart: {id: 4, props: ['id', 'state']},
-  touchend: {id: 5, props: ['id', 'state']}
+  axismove: {
+    id: 0,
+    props: ['id', 'axis', 'changed']
+  },
+  buttonchanged: {
+    id: 1,
+    props: ['id', 'state']
+  },
+  buttondown: {
+    id: 2,
+    props: ['id', 'state']
+  },
+  buttonup: {
+    id: 3,
+    props: ['id', 'state']
+  },
+  touchstart: {
+    id: 4,
+    props: ['id', 'state']
+  },
+  touchend: {
+    id: 5,
+    props: ['id', 'state']
+  }
 };
 
 var EVENTS_DECODE = {
@@ -20,12 +38,24 @@ var EVENTS_DECODE = {
 
 AFRAME.registerComponent('motion-capture-recorder', {
   schema: {
-    autoRecord: {default: false},
-    enabled: {default: true},
-    hand: {default: 'right'},
-    recordingControls: {default: false},
-    persistStroke: {default: false},
-    visibleStroke: {default: true}
+    autoRecord: {
+      default: false
+    },
+    enabled: {
+      default: true
+    },
+    hand: {
+      default: 'right'
+    },
+    recordingControls: {
+      default: false
+    },
+    persistStroke: {
+      default: false
+    },
+    visibleStroke: {
+      default: true
+    }
   },
 
   init: function () {
@@ -49,16 +79,18 @@ AFRAME.registerComponent('motion-capture-recorder', {
 
   recordEvent: function (evt) {
     var detail;
-    if (!this.isRecording) { return; }
+    if (!this.isRecording) {
+      return;
+    }
 
     // Filter out `target`, not serializable.
     if ('detail' in evt && 'state' in evt.detail && typeof evt.detail.state === 'object' &&
-        'target' in evt.detail.state) {
+      'target' in evt.detail.state) {
       delete evt.detail.state.target;
     }
 
     detail = {};
-    EVENTS[evt.type].props.forEach(function buildDetail (propName) {
+    EVENTS[evt.type].props.forEach(function buildDetail(propName) {
       // Convert GamepadButton to normal JS object.
       if (propName === 'state') {
         var stateProp;
@@ -81,22 +113,32 @@ AFRAME.registerComponent('motion-capture-recorder', {
   onTriggerChanged: function (evt) {
     var data = this.data;
     var value;
-    if (!data.enabled || data.autoRecord) { return; }
-    // Not Trigger
-    if (evt.detail.id !== 1 || !this.data.recordingControls) { return; }
-    value = evt.detail.state.value;
-    if (value <= 0.1) {
-      if (this.isRecording) { this.stopRecording(); }
+    if (!data.enabled || data.autoRecord) {
       return;
     }
-    if (!this.isRecording) { this.startRecording(); }
+    // Not Trigger
+    if (evt.detail.id !== 1 || !this.data.recordingControls) {
+      return;
+    }
+    value = evt.detail.state.value;
+    if (value <= 0.1) {
+      if (this.isRecording) {
+        this.stopRecording();
+      }
+      return;
+    }
+    if (!this.isRecording) {
+      this.startRecording();
+    }
   },
 
   getJSONData: function () {
     var data;
     var trackedControlsComponent = this.el.components['tracked-controls'];
     var controller = trackedControlsComponent && trackedControlsComponent.controller;
-    if (!this.recordedPoses) { return; }
+    if (!this.recordedPoses) {
+      return;
+    }
     data = {
       poses: this.getStrokeJSON(this.recordedPoses),
       events: this.recordedEvents
@@ -128,7 +170,9 @@ AFRAME.registerComponent('motion-capture-recorder', {
   saveCapture: function (binary) {
     var jsonData = JSON.stringify(this.getJSONData());
     var type = binary ? 'application/octet-binary' : 'application/json';
-    var blob = new Blob([jsonData], {type: type});
+    var blob = new Blob([jsonData], {
+      type: type
+    });
     var url = URL.createObjectURL(blob);
     var fileName = 'motion-capture-' + document.title + '-' + Date.now() + '.json';
     var aEl = document.createElement('a');
@@ -151,11 +195,17 @@ AFRAME.registerComponent('motion-capture-recorder', {
       this.startRecording();
     } else {
       // Don't try to record camera with controllers.
-      if (el.components.camera) { return; }
+      if (el.components.camera) {
+        return;
+      }
 
       if (data.recordingControls) {
-        el.setAttribute('vive-controls', {hand: data.hand});
-        el.setAttribute('oculus-touch-controls', {hand: data.hand});
+        el.setAttribute('vive-controls', {
+          hand: data.hand
+        });
+        el.setAttribute('oculus-touch-controls', {
+          hand: data.hand
+        });
       }
       el.setAttribute('stroke', '');
     }
@@ -170,14 +220,18 @@ AFRAME.registerComponent('motion-capture-recorder', {
       var newPoint;
       var pointerPosition;
       this.lastTimestamp = time;
-      if (!this.data.enabled || !this.isRecording) { return; }
+      if (!this.data.enabled || !this.isRecording) {
+        return;
+      }
       newPoint = {
         position: AFRAME.utils.clone(this.el.getAttribute('position')),
         rotation: AFRAME.utils.clone(this.el.getAttribute('rotation')),
         timestamp: time
       };
       this.recordedPoses.push(newPoint);
-      if (!this.data.visibleStroke) { return; }
+      if (!this.data.visibleStroke) {
+        return;
+      }
       this.el.object3D.updateMatrixWorld();
       this.el.object3D.matrixWorld.decompose(position, rotation, scale);
       pointerPosition = this.getPointerPosition(position, rotation);
@@ -188,7 +242,7 @@ AFRAME.registerComponent('motion-capture-recorder', {
   getPointerPosition: (function () {
     var pointerPosition = new THREE.Vector3();
     var offset = new THREE.Vector3(0, 0.7, 1);
-    return function getPointerPosition (position, orientation) {
+    return function getPointerPosition(position, orientation) {
       var pointer = offset
         .clone()
         .applyQuaternion(orientation)
@@ -201,20 +255,33 @@ AFRAME.registerComponent('motion-capture-recorder', {
 
   startRecording: function () {
     var el = this.el;
-    if (this.isRecording) { return; }
-    if (el.components.stroke) { el.components.stroke.reset(); }
+    if (this.isRecording) {
+      return;
+    }
+    if (el.components.stroke) {
+      el.components.stroke.reset();
+    }
     this.isRecording = true;
     this.recordedPoses = [];
     this.recordedEvents = [];
-    el.emit('strokestarted', {entity: el, poses: this.recordedPoses});
+    el.emit('strokestarted', {
+      entity: el,
+      poses: this.recordedPoses
+    });
   },
 
   stopRecording: function () {
     var el = this.el;
-    if (!this.isRecording) { return; }
-    el.emit('strokeended', {poses: this.recordedPoses});
+    if (!this.isRecording) {
+      return;
+    }
+    el.emit('strokeended', {
+      poses: this.recordedPoses
+    });
     this.isRecording = false;
-    if (!this.data.visibleStroke || this.data.persistStroke) { return; }
+    if (!this.data.visibleStroke || this.data.persistStroke) {
+      return;
+    }
     el.components.stroke.reset();
   }
 });

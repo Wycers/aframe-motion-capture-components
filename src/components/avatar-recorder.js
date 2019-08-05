@@ -9,12 +9,24 @@ var warn = AFRAME.utils.debug('aframe-motion-capture:avatar-recorder:warn');
  */
 AFRAME.registerComponent('avatar-recorder', {
   schema: {
-    autoPlay: {default: false},
-    autoRecord: {default: false},
-    cameraOverride: {type: 'selector'},
-    localStorage: {default: true},
-    recordingName: {default: constants.DEFAULT_RECORDING_NAME},
-    loop: {default: true}
+    autoPlay: {
+      default: false
+    },
+    autoRecord: {
+      default: false
+    },
+    cameraOverride: {
+      type: 'selector'
+    },
+    localStorage: {
+      default: true
+    },
+    recordingName: {
+      default: constants.DEFAULT_RECORDING_NAME
+    },
+    loop: {
+      default: true
+    }
   },
 
   init: function () {
@@ -34,10 +46,10 @@ AFRAME.registerComponent('avatar-recorder', {
     var self = this;
     var trackedControllerEls = this.el.querySelectorAll('[tracked-controls]');
     this.trackedControllerEls = {};
-    trackedControllerEls.forEach(function setupController (trackedControllerEl) {
+    trackedControllerEls.forEach(function setupController(trackedControllerEl) {
       if (!trackedControllerEl.id) {
         warn('Found a tracked controller entity without an ID. ' +
-             'Provide an ID or this controller will not be recorded');
+          'Provide an ID or this controller will not be recorded');
         return;
       }
       trackedControllerEl.setAttribute('motion-capture-recorder', {
@@ -64,7 +76,9 @@ AFRAME.registerComponent('avatar-recorder', {
    */
   onKeyDown: function (evt) {
     var key = evt.keyCode;
-    var KEYS = {space: 32};
+    var KEYS = {
+      space: 32
+    };
     switch (key) {
       // <space>: Toggle recording.
       case KEYS.space: {
@@ -103,12 +117,12 @@ AFRAME.registerComponent('avatar-recorder', {
       return;
     }
 
-    el.addEventListener('camera-set-active', function setup (evt) {
+    el.addEventListener('camera-set-active', function setup(evt) {
       prepareCamera(evt.detail.cameraEl);
       el.removeEventListener('camera-set-active', setup);
     });
 
-    function prepareCamera (cameraEl) {
+    function prepareCamera(cameraEl) {
       if (self.cameraEl) {
         self.cameraEl.removeAttribute('motion-capture-recorder');
       }
@@ -128,7 +142,9 @@ AFRAME.registerComponent('avatar-recorder', {
     var trackedControllerEls = this.trackedControllerEls;
     var self = this;
 
-    if (this.isRecording) { return; }
+    if (this.isRecording) {
+      return;
+    }
 
     log('Starting recording!');
 
@@ -137,12 +153,12 @@ AFRAME.registerComponent('avatar-recorder', {
     }
 
     // Get camera.
-    this.setupCamera(function cameraSetUp () {
+    this.setupCamera(function cameraSetUp() {
       self.isRecording = true;
       // Record camera.
       self.cameraEl.components['motion-capture-recorder'].startRecording();
       // Record tracked controls.
-      Object.keys(trackedControllerEls).forEach(function startRecordingController (id) {
+      Object.keys(trackedControllerEls).forEach(function startRecordingController(id) {
         trackedControllerEls[id].components['motion-capture-recorder'].startRecording();
       });
     });
@@ -155,7 +171,9 @@ AFRAME.registerComponent('avatar-recorder', {
   stopRecording: function () {
     var trackedControllerEls = this.trackedControllerEls;
 
-    if (!this.isRecording) { return; }
+    if (!this.isRecording) {
+      return;
+    }
 
     log('Stopped recording.');
     this.isRecording = false;
@@ -180,13 +198,15 @@ AFRAME.registerComponent('avatar-recorder', {
     var data = {};
     var trackedControllerEls = this.trackedControllerEls;
 
-    if (this.isRecording) { return; }
+    if (this.isRecording) {
+      return;
+    }
 
     // Camera.
     data.camera = this.cameraEl.components['motion-capture-recorder'].getJSONData();
 
     // Tracked controls.
-    Object.keys(trackedControllerEls).forEach(function getControllerData (id) {
+    Object.keys(trackedControllerEls).forEach(function getControllerData(id) {
       data[id] = trackedControllerEls[id].components['motion-capture-recorder'].getJSONData();
     });
 
@@ -198,7 +218,9 @@ AFRAME.registerComponent('avatar-recorder', {
    */
   storeRecording: function (recordingData) {
     var data = this.data;
-    if (!data.localStorage) { return; }
+    if (!data.localStorage) {
+      return;
+    }
     log('Recording stored in localStorage.');
     this.el.systems.recordingdb.addRecording(data.recordingName, recordingData);
   }

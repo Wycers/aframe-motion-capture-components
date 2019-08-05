@@ -1,8 +1,13 @@
 /* global THREE AFRAME  */
 AFRAME.registerComponent('stroke', {
   schema: {
-    enabled: {default: true},
-    color: {default: '#ef2d5e', type: 'color'}
+    enabled: {
+      default: true
+    },
+    color: {
+      default: '#ef2d5e',
+      type: 'color'
+    }
   },
 
   init: function () {
@@ -12,9 +17,9 @@ AFRAME.registerComponent('stroke', {
     this.numPoints = 0;
 
     // Buffers
-    this.vertices = new Float32Array(maxPoints*3*3);
-    this.normals = new Float32Array(maxPoints*3*3);
-    this.uvs = new Float32Array(maxPoints*2*2);
+    this.vertices = new Float32Array(maxPoints * 3 * 3);
+    this.normals = new Float32Array(maxPoints * 3 * 3);
+    this.uvs = new Float32Array(maxPoints * 2 * 2);
 
     // Geometries
     this.geometry = new THREE.BufferGeometry();
@@ -40,7 +45,7 @@ AFRAME.registerComponent('stroke', {
     this.el.sceneEl.appendChild(strokeEl);
   },
 
-  update: function() {
+  update: function () {
     this.material.color.set(this.data.color);
   },
 
@@ -52,7 +57,9 @@ AFRAME.registerComponent('stroke', {
       var uv = 0;
       var numPoints = this.numPoints;
       var brushSize = 0.01;
-      if (numPoints === this.maxPoints) { return; }
+      if (numPoints === this.maxPoints) {
+        return;
+      }
       for (i = 0; i < numPoints; i++) {
         this.uvs[uv++] = i / (numPoints - 1);
         this.uvs[uv++] = 0;
@@ -114,7 +121,7 @@ AFRAME.registerComponent('stroke', {
     var ab = new THREE.Vector3();
 
     for (var i = 0, il = this.idx; i < il; i++) {
-      this.normals[ i ] = 0;
+      this.normals[i] = 0;
     }
 
     var pair = true;
@@ -162,17 +169,17 @@ AFRAME.registerComponent('stroke', {
 
     // Vertices that are shared across three triangles
     for (i = 2 * 3, il = this.idx - 2 * 3; i < il; i++) {
-      this.normals[ i ] = this.normals[ i ] / 3;
+      this.normals[i] = this.normals[i] / 3;
     }
 
     // Second and penultimate triangle, that shares just two triangles
-    this.normals[ 3 ] = this.normals[ 3 ] / 2;
-    this.normals[ 3 + 1 ] = this.normals[ 3 + 1 ] / 2;
-    this.normals[ 3 + 2 ] = this.normals[ 3 * 1 + 2 ] / 2;
+    this.normals[3] = this.normals[3] / 2;
+    this.normals[3 + 1] = this.normals[3 + 1] / 2;
+    this.normals[3 + 2] = this.normals[3 * 1 + 2] / 2;
 
-    this.normals[ this.idx - 2 * 3 ] = this.normals[ this.idx - 2 * 3 ] / 2;
-    this.normals[ this.idx - 2 * 3 + 1 ] = this.normals[ this.idx - 2 * 3 + 1 ] / 2;
-    this.normals[ this.idx - 2 * 3 + 2 ] = this.normals[ this.idx - 2 * 3 + 2 ] / 2;
+    this.normals[this.idx - 2 * 3] = this.normals[this.idx - 2 * 3] / 2;
+    this.normals[this.idx - 2 * 3 + 1] = this.normals[this.idx - 2 * 3 + 1] / 2;
+    this.normals[this.idx - 2 * 3 + 2] = this.normals[this.idx - 2 * 3 + 2] / 2;
 
     this.geometry.normalizeNormals();
   }
