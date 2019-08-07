@@ -70213,6 +70213,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
    */
   updatePose: function () {
+    return
     var controller = this.controller;
     var data = this.data;
     var object3D = this.el.object3D;
