@@ -12,3 +12,5 @@ require('./components/stroke.js');
 // Systems.
 require('./systems/motion-capture-replayer.js');
 require('./systems/recordingdb.js');
+
+require('./yanyuan')
